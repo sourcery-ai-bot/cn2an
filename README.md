@@ -167,7 +167,7 @@ output = cn2an.transform("小王捡了一百块钱", "cn2an")
 # output:
 # 小王捡了100块钱
 
-# 在 an2cn 方法下，可以将句子中的中文数字转成阿拉伯数字
+# 在 an2cn 方法下，可以将句子中的阿拉伯数字转成中文数字
 output = cn2an.transform("小王捡了100块钱", "an2cn")
 # output:
 # 小王捡了一百块钱
