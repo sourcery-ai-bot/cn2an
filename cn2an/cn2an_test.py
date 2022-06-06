@@ -147,9 +147,9 @@ class Cn2anTest(unittest.TestCase):
             "点零",
             "零点点",
             "零点零大",
+            *self.error_smart_datas,
+            *list(self.smart_data_dict.keys()),
         ]
-        self.error_normal_datas.extend(self.error_smart_datas)
-        self.error_normal_datas.extend(list(self.smart_data_dict.keys()))
 
         self.error_strict_datas = [
             "一一",
@@ -161,12 +161,12 @@ class Cn2anTest(unittest.TestCase):
             "十一十二",
             "负十一十二",
             "十七十八",
+            *self.error_normal_datas,
+            *list(self.normal_data_dict.keys()),
         ]
-        self.error_strict_datas.extend(self.error_normal_datas)
-        self.error_strict_datas.extend(list(self.normal_data_dict.keys()))
 
         # 不可修改位置
-        self.normal_data_dict.update(self.strict_data_dict)
+        self.normal_data_dict |= self.strict_data_dict
         self.smart_data_dict.update(self.normal_data_dict)
 
         self.ca = Cn2An()

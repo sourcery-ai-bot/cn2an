@@ -56,10 +56,12 @@ class An2Cn(object):
                 if len_split_result == 1:
                     # 不包含小数的输入
                     integer_data = split_result[0]
-                    if mode == "rmb":
-                        output = self.__integer_convert(integer_data, "up") + "元整"
-                    else:
-                        output = self.__integer_convert(integer_data, mode)
+                    output = (
+                        self.__integer_convert(integer_data, "up") + "元整"
+                        if mode == "rmb"
+                        else self.__integer_convert(integer_data, mode)
+                    )
+
                 elif len_split_result == 2:
                     # 包含小数的输入
                     integer_data, decimal_data = split_result
@@ -69,35 +71,36 @@ class An2Cn(object):
                         len_dec_data = len(dec_data)
 
                         if len_dec_data == 0:
-                            output = int_data + "元整"
+                            output = f"{int_data}元整"
                         elif len_dec_data == 1:
                             raise ValueError(f"异常输出：{dec_data}")
                         elif len_dec_data == 2:
                             if dec_data[1] != "零":
-                                if int_data == "零":
-                                    output = dec_data[1] + "角"
-                                else:
-                                    output = int_data + "元" + dec_data[1] + "角"
+                                output = f"{dec_data[1]}角" if int_data == "零" else f"{int_data}元{dec_data[1]}角"
                             else:
-                                output = int_data + "元整"
+                                output = f"{int_data}元整"
                         else:
                             if dec_data[1] != "零":
                                 if dec_data[2] != "零":
-                                    if int_data == "零":
-                                        output = dec_data[1] + "角" + dec_data[2] + "分"
-                                    else:
-                                        output = int_data + "元" + dec_data[1] + "角" + dec_data[2] + "分"
+                                    output = (
+                                        f"{dec_data[1]}角{dec_data[2]}分"
+                                        if int_data == "零"
+                                        else f"{int_data}元{dec_data[1]}角{dec_data[2]}分"
+                                    )
+
                                 else:
-                                    if int_data == "零":
-                                        output = dec_data[1] + "角"
-                                    else:
-                                        output = int_data + "元" + dec_data[1] + "角"
+                                    output = f"{dec_data[1]}角" if int_data == "零" else f"{int_data}元{dec_data[1]}角"
                             else:
                                 if dec_data[2] != "零":
-                                    if int_data == "零":
-                                        output = dec_data[2] + "分"
-                                    else:
-                                        output = int_data + "元" + "零" + dec_data[2] + "分"
+                                    output = (
+                                        f"{dec_data[2]}分"
+                                        if int_data == "零"
+                                        else f"{int_data}元"
+                                        + "零"
+                                        + dec_data[2]
+                                        + "分"
+                                    )
+
                                 else:
                                     output = int_data + "元整"
                     else:
@@ -110,13 +113,7 @@ class An2Cn(object):
         return sign + output
 
     def __direct_convert(self, inputs: str) -> str:
-        _output = ""
-        for d in inputs:
-            if d == ".":
-                _output += "点"
-            else:
-                _output += self.number_low[int(d)]
-        return _output
+        return "".join("点" if d == "." else self.number_low[int(d)] for d in inputs)
 
     @staticmethod
     def __number_to_string(number_data: Union[int, float]) -> str:
@@ -134,7 +131,7 @@ class An2Cn(object):
 
     def __check_inputs_is_valid(self, check_data: str) -> None:
         # 检查输入数据是否在规定的字典中
-        all_check_keys = self.all_num + ".-"
+        all_check_keys = f"{self.all_num}.-"
         for data in check_data:
             if data not in all_check_keys:
                 raise ValueError(f"输入的数据不在转化范围内：{data}！")
@@ -158,7 +155,7 @@ class An2Cn(object):
                 if not (len_integer_data - i - 1) % 4:
                     output_an += numeral_list[int(d)] + unit_list[len_integer_data - i - 1]
 
-                if i > 0 and not output_an[-1] == "零":
+                if i > 0 and output_an[-1] != "零":
                     output_an += numeral_list[int(d)]
 
         output_an = output_an.replace("零零", "零").replace("零万", "万").replace("零亿", "亿").replace("亿万", "亿") \
@@ -181,10 +178,7 @@ class An2Cn(object):
             print(f"注意：小数部分长度为 {len_decimal_data} ，将自动截取前 16 位有效精度！")
             decimal_data = decimal_data[:16]
 
-        if len_decimal_data:
-            output_an = "点"
-        else:
-            output_an = ""
+        output_an = "点" if len_decimal_data else ""
         numeral_list = self.conf[f"number_{o_mode}_an2cn"]
 
         for data in decimal_data:

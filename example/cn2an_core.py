@@ -62,11 +62,7 @@ def forward_cn2an_two(inputs):
             # 单位
             unit = unit_map[cn_num]
             # 判断出万、亿，先把前面的累加再乘以单位万、亿
-            if unit % 10000 == 0:
-                output = (output + num) * unit
-            else:
-                # 累加
-                output = output + num * unit
+            output = (output + num) * unit if unit % 10000 == 0 else output + num * unit
             num = 0
         else:
             raise ValueError(f"{cn_num} 不在转化范围内")
@@ -114,7 +110,7 @@ def backward_cn2an_one(inputs):
     output = 0
     unit = 1
     num = 0
-    for index, cn_num in enumerate(reversed(inputs)):
+    for cn_num in reversed(inputs):
         if cn_num in number_map:
             # 数字
             num = number_map[cn_num]
@@ -136,7 +132,7 @@ def backward_cn2an_two(inputs):
     # 万、亿的单位
     ten_thousand_unit = 1
     num = 0
-    for index, cn_num in enumerate(reversed(inputs)):
+    for cn_num in reversed(inputs):
         if cn_num in number_map:
             # 数字
             num = number_map[cn_num]
@@ -164,7 +160,7 @@ def backward_cn2an_three(inputs):
     # 万、亿的单位
     ten_thousand_unit = 1
     num = 0
-    for index, cn_num in enumerate(reversed(inputs)):
+    for cn_num in reversed(inputs):
         if cn_num in number_map:
             # 数字
             num = number_map[cn_num]

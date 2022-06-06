@@ -24,7 +24,7 @@ def an2cn(integer_data: int) -> str:
             if not (len_integer_data - i - 1) % 4:
                 output_an += numeral_list[int(d)] + unit_list[len_integer_data - i - 1]
 
-            if i > 0 and not output_an[-1] == "零":
+            if i > 0 and output_an[-1] != "零":
                 output_an += numeral_list[int(d)]
 
     output_an = output_an.replace("零零", "零").replace("零万", "万").replace("零亿", "亿").strip("零")
